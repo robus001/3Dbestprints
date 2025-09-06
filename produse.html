@@ -37,7 +37,26 @@
     .tile .meta{padding:16px}
     .tile h4{margin:0 0 6px}
     .price{color:var(--muted)}
-    .btn.primary{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;margin-top:8px;text-align:center}
+    .btn.primary{display:inline-block;padding:10px 16px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;margin-top:8px;text-align:center;cursor:pointer}
+
+    /* Bara sus */
+    .topbar{
+      position:fixed;
+      top:20px;
+      right:20px;
+      display:flex;
+      gap:10px;
+      z-index:1000;
+    }
+    .topbar button{
+      padding:8px 14px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .topbar .login{background:#0071e3;color:#fff;}
+    .topbar .cart{background:#111;color:#fff;}
   </style>
 </head>
 <body>
@@ -45,6 +64,12 @@
     <h1>Produse disponibile</h1>
     <p>Lista completă de produse 3D. Click pe un produs pentru detalii sau cumpărare.</p>
   </header>
+
+  <!-- Bara sus -->
+  <div class="topbar">
+    <button class="login" onclick="window.location.href='login.html'">Login</button>
+    <button class="cart" onclick="window.location.href='cos.html'">🛒 Coș</button>
+  </div>
 
   <section class="wrap grid">
     <article class="tile">
@@ -55,8 +80,8 @@
       </div>
       <div class="meta">
         <h4>Suport căști</h4>
-        <div class="price">de la 79,99 RON</div>
-        <a href="#cumpara" class="btn primary">Cumpără</a>
+        <div class="price">de la 79.99 RON</div>
+        <button class="btn primary" data-name="Suport căști" data-price="79.99">Cumpără</button>
       </div>
     </article>
 
@@ -68,8 +93,8 @@
       </div>
       <div class="meta">
         <h4>Organizer birou</h4>
-        <div class="price">de la 49,99 RON</div>
-        <a href="#cumpara" class="btn primary">Cumpără</a>
+        <div class="price">de la 49.99 RON</div>
+        <button class="btn primary" data-name="Organizer birou" data-price="49.99">Cumpără</button>
       </div>
     </article>
 
@@ -81,10 +106,34 @@
       </div>
       <div class="meta">
         <h4>Suport telefon</h4>
-        <div class="price">de la 39,99 RON</div>
-        <a href="#cumpara" class="btn primary">Cumpără</a>
+        <div class="price">de la 39.99 RON</div>
+        <button class="btn primary" data-name="Suport telefon" data-price="39.99">Cumpără</button>
       </div>
     </article>
   </section>
+
+  <script>
+    function addToCart(name, price){
+      const email = localStorage.getItem("currentUser");
+      if(!email){
+        alert("Trebuie să fii logat!");
+        window.location.href = "login.html";
+        return;
+      }
+      const key = "cart_" + email;
+      const cart = JSON.parse(localStorage.getItem(key) || "[]");
+      cart.push({name, price});
+      localStorage.setItem(key, JSON.stringify(cart));
+      alert("Produs adăugat în coș!");
+    }
+
+    document.querySelectorAll(".btn.primary").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const name = btn.getAttribute("data-name");
+        const price = parseFloat(btn.getAttribute("data-price"));
+        addToCart(name, price);
+      });
+    });
+  </script>
 </body>
 </html>
