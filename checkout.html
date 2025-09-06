@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <title>Finalizare comandă — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
     :root{
       --bg:#fff;--text:#111;--muted:#6e6e73;--line:#d2d2d7;
@@ -23,8 +22,6 @@
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     }
     a{text-decoration:none;color:inherit}
-
-    /* Nav */
     .nav{position:sticky;top:0;z-index:1000;backdrop-filter:saturate(180%) blur(20px);
       background:color-mix(in srgb, var(--bg) 85%, transparent);border-bottom:1px solid var(--line)}
     .nav .bar{display:flex;align-items:center;gap:16px;height:56px;max-width:1200px;margin:0 auto;padding:0 20px}
@@ -33,21 +30,15 @@
     .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px}
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{border:1px solid var(--line);color:var(--text)}
-
-    /* Checkout */
-    .wrap{max-width:800px;margin:32px auto;padding:0 20px;display:grid;gap:32px}
+    .wrap{max-width:800px;margin:32px auto;padding:0 20px}
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
     .card h2{font-size:20px;margin-bottom:16px}
     .form-group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:var(--muted)}
-    input,textarea{
-      width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;
-      font-size:16px;background:transparent;color:var(--text)
-    }
+    input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:transparent;color:var(--text)}
     input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 40%,transparent)}
     .summary{font-size:16px;margin-top:8px}
     .total{font-weight:600;font-size:18px;text-align:right;margin-top:12px}
-    #paypal-button-container{margin-top:20px}
   </style>
 </head>
 <body>
@@ -88,7 +79,7 @@
       </form>
     </div>
 
-    <!-- Bon -->
+    <!-- Bon + PayPal -->
     <div class="card">
       <h2>Comanda ta</h2>
       <div id="orderItems" class="summary"></div>
@@ -98,7 +89,7 @@
   </main>
 
   <!-- PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AdMU3rWTuZ0u3vJZHZ3dzP3B2eDGpCMxctpogxfVpNuvyb4k1bvfHHlMm1CU9Qup8uND52SE2defJLjI&currency=RON"></script>
 
   <script>
     // login display
@@ -137,28 +128,24 @@
         orderTotal.textContent = `Total: ${total.toFixed(2)} RON`;
         return total;
       }
-      renderOrder();
+      let totalSum = renderOrder();
 
-      // PayPal button
+      // PayPal Buttons
       paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color:  'blue',
-          shape:  'rect',
-          label:  'paypal'
-        },
         createOrder: function(data, actions) {
-          let totalEUR = (renderOrder()/5).toFixed(2); // convertim RON -> EUR
+          totalSum = renderOrder(); // actualizează suma
           return actions.order.create({
             purchase_units: [{
-              amount: { value: totalEUR }
+              amount: {
+                value: totalSum.toFixed(2)
+              }
             }]
           });
         },
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(details) {
-            alert('Plata a fost efectuată de ' + details.payer.name.given_name);
-            localStorage.removeItem(key); // golim coșul
+            alert('Plata a fost realizată cu succes de ' + details.payer.name.given_name + '!');
+            localStorage.removeItem(key); // goliți coșul
             window.location.href = "index.html";
           });
         }
@@ -167,3 +154,4 @@
   </script>
 </body>
 </html>
+
