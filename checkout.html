@@ -89,11 +89,10 @@
       <h2>Comanda ta</h2>
       <div id="orderItems" class="summary"></div>
       <div id="orderTotal" class="total">Total: 0.00 RON</div>
-      <button class="checkout-btn" id="checkoutBtn">Plătește cu Stripe</button>
+      <button class="checkout-btn" id="checkoutBtn">Continuă la plată</button>
     </div>
   </main>
 
-  <script src="https://js.stripe.com/v3/"></script>
   <script>
     const email = localStorage.getItem("currentUser");
     const loginBtn = document.getElementById("loginBtn");
@@ -132,24 +131,11 @@
 
       renderOrder();
 
-      const stripe = Stripe("pk_test_51Q0pYWEPOakaAu5Ae8CsVKtyAlCVAl90rAVNZeiqKIQqw029M8wu4E6VX5wEhy1x18arp2OdhbprFds2QBG26P9G009CcME5Xs");
-
-      checkoutBtn.addEventListener("click", async ()=>{
-        const totalText = orderTotal.textContent.replace("Total: ","");
-        const amount = Math.round(parseFloat(totalText) * 100); // în bani
-
-        const response = await fetch("http://localhost:3000/create-checkout-session", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ amount })
-        });
-
-        const session = await response.json();
-        if(session.id){
-          stripe.redirectToCheckout({ sessionId: session.id });
-        } else {
-          alert("Eroare la creare sesiune Stripe!");
-        }
+      // Buton simplu de plată
+      checkoutBtn.addEventListener("click", ()=> {
+        const total = orderTotal.textContent.replace("Total: ","");
+        alert(`Suma totală este ${total}.\nVeți fi direcționat către pagina de plată.`);
+        // aici poți face redirect la o altă pagină: window.location.href="pagina_de_plata.html";
       });
     }
   </script>
