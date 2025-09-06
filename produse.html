@@ -65,11 +65,47 @@
     <p>Lista completă de produse 3D. Click pe un produs pentru detalii sau cumpărare.</p>
   </header>
 
-  <!-- Bara sus -->
-  <div class="topbar">
-    <button class="login" onclick="window.location.href='login.html'">Login</button>
-    <button class="cart" onclick="window.location.href='cos.html'">🛒 Coș</button>
-  </div>
+ <!-- Bara sus -->
+<div class="topbar">
+  <button class="login" id="loginBtn">Login</button>
+  <button class="cart" onclick="window.location.href='cos.html'">🛒 Coș</button>
+</div>
+
+<script>
+  const loginBtn = document.getElementById("loginBtn");
+  const currentUser = localStorage.getItem("currentUser");
+
+  // Dacă e logat, afișează email-ul
+  if(currentUser){
+    loginBtn.textContent = currentUser;
+    loginBtn.onclick = null; // dezactivează click-ul
+  } else {
+    loginBtn.onclick = ()=>{ window.location.href='login.html'; }
+  }
+
+  // Funcție pentru adăugare în coș
+  function addToCart(name, price){
+    const email = localStorage.getItem("currentUser");
+    if(!email){
+      alert("Trebuie să fii logat!");
+      window.location.href = "login.html";
+      return;
+    }
+    const key = "cart_" + email;
+    const cart = JSON.parse(localStorage.getItem(key) || "[]");
+    cart.push({name, price});
+    localStorage.setItem(key, JSON.stringify(cart));
+    alert("Produs adăugat în coș!");
+  }
+
+  document.querySelectorAll(".btn.primary").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const name = btn.getAttribute("data-name");
+      const price = parseFloat(btn.getAttribute("data-price"));
+      addToCart(name, price);
+    });
+  });
+</script>
 
   <section class="wrap grid">
     <article class="tile">
