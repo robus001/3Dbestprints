@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>3Dbestprints — Site Official </title>
-  <meta name="description" content="magazin 3D." />
+  <title>3Dbestprints — Sablon stil Apple</title>
+  <meta name="description" content="Sablon de landing page curat, inspirat de stilul Apple — HTML, CSS și puțin JS, responsive, pregătit pentru un magazin 3D." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='black'/%3E%3C/svg%3E">
   <style>
     /* ——— Design tokens ——— */
@@ -13,10 +13,11 @@
       --text: #111111;
       --muted: #6e6e73;
       --line: #d2d2d7;
-      --accent: #0071e3;
+      --accent: #0071e3; /* Apple-ish blue */
       --radius: 20px;
       --shadow: 0 10px 30px rgba(0,0,0,.08);
     }
+
     @media (prefers-color-scheme: dark){
       :root{
         --bg: #000000;
@@ -44,9 +45,17 @@
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
     /* ——— Top nav ——— */
-    .nav{position:sticky;top:0;z-index:1000;backdrop-filter: saturate(180%) blur(20px);background: color-mix(in srgb, var(--bg) 80%, transparent);border-bottom: 1px solid var(--line);}
+    .nav{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter: saturate(180%) blur(20px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
     .nav .bar{display:flex;align-items:center;gap:16px;height:56px}
-    .logo{width:24px;height:24px;border-radius:6px;background: currentColor; display:inline-block;}
+    .logo{
+      width:24px;height:24px;border-radius:6px;
+      background: currentColor; display:inline-block;
+    }
     .nav a{font-size:14px;color:var(--muted)}
     .nav a:hover{color:var(--text)}
     .spacer{flex:1}
@@ -54,6 +63,7 @@
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{border:1px solid var(--line);color:var(--text)}
 
+    /* mobile menu */
     .mobile-toggle{display:none;border:1px solid var(--line);border-radius:10px;padding:6px}
     .links{display:flex;gap:20px}
     @media (max-width:860px){
@@ -73,15 +83,25 @@
     .hero h1{font-size:clamp(32px, 6vw, 64px);line-height:1.05;margin:8px 0}
     .hero p{font-size:clamp(16px, 2.4vw, 20px);color:var(--muted);max-width:60ch}
     .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-    .hero-card{border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);background:linear-gradient(180deg, color-mix(in srgb, var(--text) 5%, transparent), transparent);}
+    .hero-card{
+      border:1px solid var(--line);border-radius:var(--radius);
+      padding:24px;box-shadow:var(--shadow);
+      background:linear-gradient(180deg, color-mix(in srgb, var(--text) 5%, transparent), transparent);
+    }
     .device{aspect-ratio: 16 / 10; border-radius:14px; border:1px solid var(--line); display:grid;place-items:center;position:relative;overflow:hidden}
     .device svg{width:80%;height:auto}
-    @media (min-width:861px){.hero .grid{grid-template-columns: 1.1fr .9fr}}
+
+    @media (min-width:861px){
+      .hero .grid{grid-template-columns: 1.1fr .9fr}
+    }
 
     /* ——— Highlights ——— */
     .highlights{padding:48px 0;border-bottom:1px solid var(--line)}
     .cards{display:grid;gap:16px}
-    .card{border:1px solid var(--line);border-radius:16px;padding:20px;background:color-mix(in srgb, var(--text) 3%, transparent);}
+    .card{
+      border:1px solid var(--line);border-radius:16px;padding:20px;
+      background:color-mix(in srgb, var(--text) 3%, transparent);
+    }
     .card h3{margin:6px 0 8px;font-size:20px}
     .card p{color:var(--muted);margin:0}
     @media (min-width:861px){.cards{grid-template-columns: repeat(3, 1fr)}}
@@ -92,16 +112,20 @@
     .row .copy p{color:var(--muted);max-width:60ch}
     .panel{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
     .panel .media{aspect-ratio: 16/9;display:grid;place-items:center;background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent)}
-    @media (min-width:861px){.row{grid-template-columns: 1fr 1fr}.row.flip .copy{order:2}.row.flip .panel{order:1}}
+
+    @media (min-width:861px){
+      .row{grid-template-columns: 1fr 1fr}
+      .row.flip .copy{order:2}
+      .row.flip .panel{order:1}
+    }
 
     /* ——— Product grid ——— */
     .grid{display:grid;gap:16px}
-    .tile{border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
+    .tile{border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
     .tile .shot{aspect-ratio: 4/3;display:grid;place-items:center;background:color-mix(in srgb, var(--text) 5%, transparent)}
-    .tile .meta{padding:16px;display:flex;flex-direction:column;gap:8px}
+    .tile .meta{padding:16px}
     .tile h4{margin:0 0 6px}
     .price{color:var(--muted)}
-    .tile .btn-tile{display:inline-block;text-align:center;padding:8px 16px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;text-decoration:none}
     @media (min-width:700px){.grid.cols-3{grid-template-columns: repeat(3, 1fr)}}
 
     /* ——— Footer ——— */
@@ -151,17 +175,18 @@
       <div class="copy">
         <span class="eyebrow">3Dbestprints</span>
         <h1>Ideile tale, <br>materializate impecabil.</h1>
-        <p>Magazin de produse printate 3D și comenzi personalizate. Calitate premium, design minimalist, livrare rapidă. </p>
+        <p>Magazin de produse printate 3D și comenzi personalizate. Calitate premium, design minimalist, livrare rapidă. Un sablon curat în stil Apple pe care îl poți personaliza după brandul tău.</p>
         <div class="cta">
           <a class="btn primary" href="#magazin">Vezi magazinul</a>
           <a class="btn ghost" href="#contact">Solicită un model</a>
         </div>
         <div style="margin-top:16px">
-          <span class="tag">PLA+ · PLA · PETG </span>
+          <span class="tag">PLA+ · ABS · PETG · Resin</span>
         </div>
       </div>
       <div class="hero-card">
         <div class="device" aria-label="Prezentare produs">
+          <!-- Decorative product mockup -->
           <svg viewBox="0 0 600 400" role="img" aria-label="Mockup">
             <defs>
               <linearGradient id="g" x1="0" x2="1">
@@ -209,7 +234,7 @@
       <h2>Printuri care ies în evidență.</h2>
       <p>De la accesorii pentru birou până la piese funcționale, fiecare produs e optimizat pentru o suprafață netedă și toleranțe precise.</p>
       <div class="cta">
-        <a class="btn primary" href="produse.html">Cumpără acum</a>
+        <a class="btn primary" href="#magazin">Cumpără acum</a>
         <a class="btn ghost" href="#detalii">Află detalii</a>
       </div>
     </div>
@@ -243,8 +268,8 @@
       </div>
     </div>
     <div class="copy">
-      <h2>Produse de lunga durata.</h2>
-      <p>Ceva scris aci ma mai gandesc.</p>
+      <h2>Optimizat pentru performanță.</h2>
+      <p>Imagini comprimate, layout responsive, CSS ușor. Acest sablon este un punct de start solid pentru un magazin performant.</p>
       <div class="cta">
         <a class="btn ghost" href="#documentatie">Documentație</a>
       </div>
@@ -255,7 +280,8 @@
   <section class="wrap" id="magazin" style="padding:48px 0">
     <h2 style="font-size:clamp(24px,4vw,40px);margin:0 0 16px">Magazin</h2>
     <div class="grid cols-3">
-      <a href="produse.html" class="tile" aria-label="Suport căști">
+      <!-- Tile 1 -->
+      <article class="tile" aria-label="Suport căști">
         <div class="shot">
           <svg viewBox="0 0 400 300" aria-hidden="true">
             <rect width="400" height="300" fill="currentColor" opacity=".06"/>
@@ -269,9 +295,9 @@
           <h4>Suport căști</h4>
           <div class="price">de la 79,99 RON</div>
         </div>
-      </a>
-
-      <a href="produse.html" class="tile" aria-label="Organizer birou">
+      </article>
+      <!-- Tile 2 -->
+      <article class="tile" aria-label="Organizer birou">
         <div class="shot">
           <svg viewBox="0 0 400 300" aria-hidden="true">
             <rect width="400" height="300" fill="currentColor" opacity=".06"/>
@@ -285,9 +311,9 @@
           <h4>Organizer birou</h4>
           <div class="price">de la 49,99 RON</div>
         </div>
-      </a>
-
-      <a href="produse.html" class="tile" aria-label="Mai multe produse">
+      </article>
+      <!-- Tile 3 -->
+      <article href="produse.html" class="tile" aria-label="Mai multe produse">
         <div class="shot">
           <svg viewBox="0 0 400 300" aria-hidden="true">
             <rect width="400" height="300" fill="currentColor" opacity=".06"/>
@@ -314,8 +340,8 @@
       <div>
         <div style="font-weight:600;color:var(--text)">Companie</div>
         <a href="#despre">Despre</a><br>
-        <a href="#cariera">Locatii</a><br>
-        <a href="#press">Informatii</a>
+        <a href="#cariera">Cariere</a><br>
+        <a href="#press">Presă</a>
       </div>
       <div>
         <div style="font-weight:600;color:var(--text)">Asistență</div>
@@ -344,7 +370,7 @@
     // Current year
     document.getElementById('y').textContent = new Date().getFullYear();
 
-    // Smooth anchor scroll
+    // Smooth anchor scroll (reduced motion aware)
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!prefersReduced) {
       document.querySelectorAll('a[href^="#"]').forEach(a => {
