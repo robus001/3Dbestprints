@@ -96,11 +96,12 @@
 
     /* ——— Product grid ——— */
     .grid{display:grid;gap:16px}
-    .tile{border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+    .tile{border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
     .tile .shot{aspect-ratio: 4/3;display:grid;place-items:center;background:color-mix(in srgb, var(--text) 5%, transparent)}
-    .tile .meta{padding:16px}
+    .tile .meta{padding:16px;display:flex;flex-direction:column;gap:8px}
     .tile h4{margin:0 0 6px}
     .price{color:var(--muted)}
+    .tile .btn-tile{display:inline-block;text-align:center;padding:8px 16px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;text-decoration:none}
     @media (min-width:700px){.grid.cols-3{grid-template-columns: repeat(3, 1fr)}}
 
     /* ——— Footer ——— */
@@ -269,6 +270,7 @@
           <div class="price">de la 79,99 RON</div>
         </div>
       </a>
+
       <a href="produse.html" class="tile" aria-label="Organizer birou">
         <div class="shot">
           <svg viewBox="0 0 400 300" aria-hidden="true">
@@ -284,19 +286,19 @@
           <div class="price">de la 49,99 RON</div>
         </div>
       </a>
-      <a href="produse.html" class="tile" aria-label="Suport telefon">
+
+      <a href="produse.html" class="tile" aria-label="Mai multe produse">
         <div class="shot">
           <svg viewBox="0 0 400 300" aria-hidden="true">
             <rect width="400" height="300" fill="currentColor" opacity=".06"/>
             <g stroke="currentColor" fill="none" opacity=".35">
-              <rect x="170" y="80" width="60" height="140" rx="12"/>
-              <path d="M150 240h100"/>
+              <path d="M100 150h200v100H100z"/>
             </g>
           </svg>
         </div>
         <div class="meta">
-          <h4>Suport telefon</h4>
-          <div class="price">de la 39,99 RON</div>
+          <h4>Mai multe produse</h4>
+          <a href="produse.html" class="btn-tile">Accesează</a>
         </div>
       </a>
     </div>
