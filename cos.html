@@ -81,6 +81,7 @@
       height:fit-content;
     }
     .summary h2{font-size:20px;margin-bottom:10px}
+    .summary div{font-size:16px}
     .total{font-weight:600;font-size:18px;text-align:right;margin-top:10px}
     .btn.pay{margin-top:10px;width:100%;text-align:center;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-weight:600;cursor:pointer}
   </style>
@@ -93,6 +94,7 @@
       <a class="logo" href="index.html" aria-label="Acasă"></a>
       <div class="spacer"></div>
       <a class="btn ghost" id="loginBtn" href="login.html">Login</a>
+      <a class="btn ghost" href="index.html">Acasă</a>
     </div>
   </header>
 
@@ -105,7 +107,7 @@
       <h2>Bon</h2>
       <div id="summaryItems"></div>
       <div class="total" id="summaryTotal">Total: 0.00 RON</div>
-      <button class="btn pay">Continuă la plată</button>
+      <button id="checkoutBtn" class="btn pay">Continuă la plată</button>
     </aside>
   </main>
 
@@ -133,6 +135,7 @@
       const box = document.getElementById("cartBox");
       const summaryItems = document.getElementById("summaryItems");
       const summaryTotal = document.getElementById("summaryTotal");
+      const checkoutBtn = document.getElementById("checkoutBtn");
 
       function renderCart(){
         box.innerHTML = "";
@@ -177,6 +180,16 @@
       }
 
       renderCart();
+
+      // Continua la plata (ex: checkout.html sau PayPal)
+      checkoutBtn.addEventListener("click", ()=>{
+        if(cart.length === 0){
+          alert("Coșul este gol!");
+          return;
+        }
+        // aici poți integra PayPal sau checkout custom
+        window.location.href = "checkout.html";
+      });
     }
   </script>
 </body>
