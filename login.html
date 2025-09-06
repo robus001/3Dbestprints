@@ -2,46 +2,56 @@
 <html lang="ro">
 <head>
   <meta charset="utf-8">
-  <title>Autentificare — 3Dbestprints</title>
+  <title>Login — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Font Apple-ish și reset */
     body, html {
       margin:0; padding:0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background:#f5f5f7; display:flex; justify-content:center; align-items:center; height:100vh;
-      color:#111; /* text mai închis */
+      background:#f5f5f7;
+      display:flex; justify-content:center; align-items:center;
+      height:100vh;
+      color:#111111;
     }
 
-    /* Container central */
     .auth-container {
-      background:#fff; padding:40px 30px; border-radius:20px;
+      background:#fff;
+      padding:40px 30px;
+      border-radius:20px;
       box-shadow:0 20px 40px rgba(0,0,0,0.1);
-      width:320px; text-align:center;
+      width:320px;
+      text-align:center;
       transition: transform 0.3s ease;
     }
 
-    h1 {margin-bottom:30px; font-size:28px; font-weight:700;}
+    h1 { margin-bottom:30px; font-size:28px; font-weight:700; color:#111; }
 
     .btn {
-      display:block; width:100%; padding:14px 0; margin:12px 0; font-size:16px; font-weight:600;
-      border:none; border-radius:12px; cursor:pointer; transition: all 0.2s ease;
+      display:block;
+      width:100%;
+      padding:14px 0;
+      margin:12px 0;
+      font-size:16px;
+      font-weight:600;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      transition: all 0.2s ease;
     }
     .btn-login {background:#0071e3; color:#fff;}
     .btn-register {background:#fff; color:#0071e3; border:2px solid #0071e3;}
 
-    .btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
-    .btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+    .btn:hover {transform:translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
+    .btn:active {transform:translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
 
-    /* Modal inputs */
-    .modal {display:none; flex-direction:column; gap:12px; margin-top:20px;}
+    .form-modal {display:none; flex-direction:column; gap:12px; margin-top:20px;}
     input {width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; font-size:14px;}
     .submit-btn {
       background:#0071e3; color:#fff; border:none; padding:12px;
       border-radius:999px; font-weight:600; cursor:pointer; transition: all 0.2s ease;
     }
-    .submit-btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
-    .submit-btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+    .submit-btn:hover {transform:translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
+    .submit-btn:active {transform:translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
 
     .switch {margin-top:10px; font-size:14px; color:#0071e3; cursor:pointer;}
   </style>
@@ -52,7 +62,7 @@
     <button class="btn btn-login" id="loginBtn">Login</button>
     <button class="btn btn-register" id="registerBtn">Înregistrează-te</button>
 
-    <div class="modal" id="formModal">
+    <div class="form-modal" id="formModal">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Parolă" required>
       <button class="submit-btn" id="submitBtn">Confirmă</button>
@@ -69,6 +79,13 @@
     const authContainer = document.getElementById("authContainer");
 
     let isLogin = true;
+
+    // Dacă e deja logat, afișăm email-ul în loc de Login
+    const currentUser = localStorage.getItem("currentUser");
+    if(currentUser){
+      loginBtn.textContent = currentUser;
+      registerBtn.style.display = "none"; // nu arătăm înregistrare dacă e logat
+    }
 
     function openForm(loginMode){
       isLogin = loginMode;
@@ -118,10 +135,16 @@
         localStorage.setItem("cart_" + email, JSON.stringify([]));
         alert("Cont creat și logat cu succes!");
       }
-      formModal.style.display = "none";
-      loginBtn.style.display = "block";
-      registerBtn.style.display = "block";
+
+      // Redirecționare înapoi
+      const ref = localStorage.getItem("referrer") || "/";
+      window.location.href = ref;
     });
+
+    // Salvăm pagina de unde s-a venit
+    if(!localStorage.getItem("referrer")){
+      localStorage.setItem("referrer", document.referrer || "/");
+    }
   </script>
 </body>
 </html>
