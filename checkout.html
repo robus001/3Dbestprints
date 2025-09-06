@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <title>Finalizare comandă — 3Dbestprints</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root{
+      --bg:#fff;--text:#111;--muted:#6e6e73;--line:#d2d2d7;
+      --accent:#0071e3;--card:#fff;--radius:18px;--shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#1c1c1e;--text:#f5f5f7;--muted:#a1a1a6;--line:#3a3a3c;
+        --accent:#0a84ff;--card:#2c2c2e;--shadow:0 10px 30px rgba(0,0,0,.6);
+      }
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);color:var(--text);line-height:1.5;
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    a{text-decoration:none;color:inherit}
+
+    /* Nav */
+    .nav{position:sticky;top:0;z-index:1000;backdrop-filter:saturate(180%) blur(20px);
+      background:color-mix(in srgb, var(--bg) 85%, transparent);border-bottom:1px solid var(--line)}
+    .nav .bar{display:flex;align-items:center;gap:16px;height:56px;max-width:1200px;margin:0 auto;padding:0 20px}
+    .logo{width:24px;height:24px;border-radius:6px;background:currentColor;display:inline-block}
+    .spacer{flex:1}
+    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{border:1px solid var(--line);color:var(--text)}
+
+    /* Checkout */
+    .wrap{max-width:800px;margin:32px auto;padding:0 20px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
+    .card h2{font-size:20px;margin-bottom:16px}
+    .form-group{margin-bottom:16px}
+    label{display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:var(--muted)}
+    input,textarea{
+      width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;
+      font-size:16px;background:transparent;color:var(--text)
+    }
+    input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 40%,transparent)}
+    .summary{font-size:16px;margin-top:8px}
+    .total{font-weight:600;font-size:18px;text-align:right;margin-top:12px}
+    .pay-btn{margin-top:20px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-weight:600;font-size:16px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+  <header class="nav">
+    <div class="bar">
+      <a class="logo" href="index.html" aria-label="Acasă"></a>
+      <div class="spacer"></div>
+      <a class="btn ghost" id="loginBtn" href="login.html">Login</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Date client -->
+    <div class="card">
+      <h2>Date de livrare</h2>
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="fname">Prenume</label>
+          <input type="text" id="fname" required>
+        </div>
+        <div class="form-group">
+          <label for="lname">Nume</label>
+          <input type="text" id="lname" required>
+        </div>
+        <div class="form-group">
+          <label for="address">Adresă</label>
+          <textarea id="address" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="phone">Telefon</label>
+          <input type="tel" id="phone" pattern="[0-9+ ]+" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bon -->
+    <div class="card">
+      <h2>Comanda ta</h2>
+      <div id="orderItems" class="summary"></div>
+      <div id="orderTotal" class="total">Total: 0.00 RON</div>
+      <button class="pay-btn" id="paypalBtn">Plătește cu PayPal</button>
+    </div>
+  </main>
+
+  <script>
+    // login display
+    const email = localStorage.getItem("currentUser");
+    const loginBtn = document.getElementById("loginBtn");
+    if(email){
+      loginBtn.textContent = email;
+      loginBtn.href = "#";
+      loginBtn.addEventListener("click", ()=>{
+        if(confirm("Vrei să te deloghezi?")){
+          localStorage.removeItem("currentUser");
+          window.location.href = "index.html";
+        }
+      });
+    }
+
+    // load cart
+    if(!email){
+      alert("Trebuie să fii logat!");
+      window.location.href = "login.html";
+    } else {
+      const key = "cart_" + email;
+      let cart = JSON.parse(localStorage.getItem(key) || "[]");
+      const orderItems = document.getElementById("orderItems");
+      const orderTotal = document.getElementById("orderTotal");
+
+      function renderOrder(){
+        orderItems.innerHTML = "";
+        let total = 0;
+        cart.forEach(p=>{
+          const div = document.createElement("div");
+          div.textContent = `${p.name} — ${p.price.toFixed(2)} RON`;
+          orderItems.appendChild(div);
+          total += p.price;
+        });
+        orderTotal.textContent = `Total: ${total.toFixed(2)} RON`;
+      }
+      renderOrder();
+
+      // buton paypal
+      document.getElementById("paypalBtn").addEventListener("click", ()=>{
+        alert("Aici se integrează butonul PayPal.");
+        // aici vei pune codul oficial PayPal (JS SDK)
+      });
+    }
+  </script>
+</body>
+</html>
