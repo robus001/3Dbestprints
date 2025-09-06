@@ -1,127 +1,389 @@
 <!doctype html>
 <html lang="ro">
 <head>
-  <meta charset="utf-8">
-  <title>Autentificare — 3Dbestprints</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3Dbestprints — Sablon stil Apple</title>
+  <meta name="description" content="Magazin 3D." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='black'/%3E%3C/svg%3E">
   <style>
-    /* Font Apple-ish și reset */
-    body, html {
-      margin:0; padding:0;
+    /* ——— Design tokens ——— */
+    :root{
+      --bg: #ffffff;
+      --text: #111111;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #0071e3; 
+      --radius: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #000000;
+        --text: #f5f5f7;
+        --muted: #a1a1a6;
+        --line: #3a3a3c;
+        --shadow: 0 10px 30px rgba(0,0,0,.4);
+      }
+    }
+
+    /* ——— Base ——— */
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background:#f5f5f7; display:flex; justify-content:center; align-items:center; height:100vh;
-      color:#111; /* text mai închis */
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* ——— Top nav ——— */
+    .nav{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter: saturate(180%) blur(20px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav .bar{display:flex;align-items:center;gap:16px;height:56px}
+    .logo{
+      width:24px;height:24px;border-radius:6px;
+      background: currentColor; display:inline-block;
+    }
+    .nav a{font-size:14px;color:var(--muted)}
+    .nav a:hover{color:var(--text)}
+    .spacer{flex:1}
+    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font-weight:600}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{border:1px solid var(--line);color:var(--text)}
+
+    /* mobile menu */
+    .mobile-toggle{display:none;border:1px solid var(--line);border-radius:10px;padding:6px}
+    .links{display:flex;gap:20px}
+    @media (max-width:860px){
+      .links{display:none}
+      .mobile-toggle{display:inline-flex}
+      .drawer{display:none;position:fixed;inset:56px 0 auto 0;background:var(--bg);border-bottom:1px solid var(--line);}
+      .drawer .wrap{display:grid;gap:8px;padding:16px 20px}
+      .drawer a{padding:10px 6px;border-radius:8px}
+      .drawer a:hover{background:color-mix(in srgb, var(--text) 6%, transparent)}
+      .drawer.open{display:block}
     }
 
-    /* Container central */
-    .auth-container {
-      background:#fff; padding:40px 30px; border-radius:20px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.1);
-      width:320px; text-align:center;
-      transition: transform 0.3s ease;
+    /* ——— Hero ——— */
+    .hero{padding:64px 0 32px;border-bottom:1px solid var(--line)}
+    .hero .grid{display:grid;gap:32px;align-items:center}
+    .eyebrow{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+    .hero h1{font-size:clamp(32px, 6vw, 64px);line-height:1.05;margin:8px 0}
+    .hero p{font-size:clamp(16px, 2.4vw, 20px);color:var(--muted);max-width:60ch}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .hero-card{
+      border:1px solid var(--line);border-radius:var(--radius);
+      padding:24px;box-shadow:var(--shadow);
+      background:linear-gradient(180deg, color-mix(in srgb, var(--text) 5%, transparent), transparent);
+    }
+    .device{aspect-ratio: 16 / 10; border-radius:14px; border:1px solid var(--line); display:grid;place-items:center;position:relative;overflow:hidden}
+    .device svg{width:80%;height:auto}
+
+    @media (min-width:861px){
+      .hero .grid{grid-template-columns: 1.1fr .9fr}
     }
 
-    h1 {margin-bottom:30px; font-size:28px; font-weight:700;}
-
-    .btn {
-      display:block; width:100%; padding:14px 0; margin:12px 0; font-size:16px; font-weight:600;
-      border:none; border-radius:12px; cursor:pointer; transition: all 0.2s ease;
+    /* ——— Highlights ——— */
+    .highlights{padding:48px 0;border-bottom:1px solid var(--line)}
+    .cards{display:grid;gap:16px}
+    .card{
+      border:1px solid var(--line);border-radius:16px;padding:20px;
+      background:color-mix(in srgb, var(--text) 3%, transparent);
     }
-    .btn-login {background:#0071e3; color:#fff;}
-    .btn-register {background:#fff; color:#0071e3; border:2px solid #0071e3;}
+    .card h3{margin:6px 0 8px;font-size:20px}
+    .card p{color:var(--muted);margin:0}
+    @media (min-width:861px){.cards{grid-template-columns: repeat(3, 1fr)}}
 
-    .btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
-    .btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
+    /* ——— Showcase rows ——— */
+    .row{display:grid;gap:24px;align-items:center;padding:48px 0}
+    .row .copy h2{font-size:clamp(24px, 4.4vw, 44px);line-height:1.1;margin:.2em 0}
+    .row .copy p{color:var(--muted);max-width:60ch}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+    .panel .media{aspect-ratio: 16/9;display:grid;place-items:center;background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent)}
 
-    /* Modal inputs */
-    .modal {display:none; flex-direction:column; gap:12px; margin-top:20px;}
-    input {width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; font-size:14px;}
-    .submit-btn {
-      background:#0071e3; color:#fff; border:none; padding:12px;
-      border-radius:999px; font-weight:600; cursor:pointer; transition: all 0.2s ease;
+    @media (min-width:861px){
+      .row{grid-template-columns: 1fr 1fr}
+      .row.flip .copy{order:2}
+      .row.flip .panel{order:1}
     }
-    .submit-btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
-    .submit-btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
 
-    .switch {margin-top:10px; font-size:14px; color:#0071e3; cursor:pointer;}
+    /* ——— Product grid ——— */
+    .grid{display:grid;gap:16px}
+    .tile{border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+    .tile .shot{aspect-ratio: 4/3;display:grid;place-items:center;background:color-mix(in srgb, var(--text) 5%, transparent)}
+    .tile .meta{padding:16px}
+    .tile h4{margin:0 0 6px}
+    .price{color:var(--muted)}
+    @media (min-width:700px){.grid.cols-3{grid-template-columns: repeat(3, 1fr)}}
+
+    /* ——— Footer ——— */
+    footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
+    footer .cols{display:grid;gap:16px}
+    footer a{color:var(--muted)}
+    footer a:hover{color:var(--text)}
+    @media (min-width:800px){footer .cols{grid-template-columns: repeat(4, 1fr)}}
+
+    /* micro helpers */
+    .tag{display:inline-block;border:1px solid var(--line);padding:4px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
   </style>
 </head>
 <body>
-  <div class="auth-container" id="authContainer">
-    <h1>3Dbestprints</h1>
-    <button class="btn btn-login" id="loginBtn">Login</button>
-    <button class="btn btn-register" id="registerBtn">Înregistrează-te</button>
-
-    <div class="modal" id="formModal">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Parolă" required>
-      <button class="submit-btn" id="submitBtn">Confirmă</button>
-      <div class="switch" id="switchForm"></div>
+  <!-- ——— Navigation ——— -->
+  <header class="nav" role="banner">
+    <div class="wrap bar">
+      <a class="logo" href="#home" aria-label="Acasă"></a>
+      <nav class="links" aria-label="Principal">
+        <a href="#produse">Produse</a>
+        <a href="#noutati">Noutăți</a>
+        <a href="#suport">Suport</a>
+        <a href="#magazin">Magazin</a>
+      </nav>
+      <div class="spacer"></div>
+      <!-- Butoane noi -->
+      <a class="btn ghost" href="login.html" aria-label="Login">Login</a>
+      <a class="btn ghost" href="cos.html" aria-label="Coș">Coș</a>
+      <button class="mobile-toggle" aria-label="Deschide meniul" aria-expanded="false" id="hamburger">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
     </div>
-  </div>
+    <div class="drawer" id="drawer" aria-hidden="true">
+      <div class="wrap">
+        <a href="#produse">Produse</a>
+        <a href="#noutati">Noutăți</a>
+        <a href="#suport">Suport</a>
+        <a href="#magazin">Magazin</a>
+        <a href="login.html">Login</a>
+        <a href="cos.html">Coș</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ——— Hero ——— -->
+  <main id="home" class="hero">
+    <div class="wrap grid">
+      <div class="copy">
+        <span class="eyebrow">3Dbestprints</span>
+        <h1>Ideile tale, <br>materializate impecabil.</h1>
+        <p>Magazin de produse printate 3D și comenzi personalizate. Calitate premium, design minimalist, livrare rapidă. Un sablon curat în stil Apple pe care îl poți personaliza după brandul tău.</p>
+        <div class="cta">
+          <a class="btn primary" href="#magazin">Vezi magazinul</a>
+          <a class="btn ghost" href="#contact">Solicită un model</a>
+        </div>
+        <div style="margin-top:16px">
+          <span class="tag">PLA+ · PLA · PETG </span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="device" aria-label="Prezentare produs">
+          <!-- Decorative product mockup -->
+          <svg viewBox="0 0 600 400" role="img" aria-label="Mockup">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0%" stop-color="currentColor" stop-opacity=".14" />
+                <stop offset="100%" stop-color="currentColor" stop-opacity=".02" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="600" height="400" rx="16" fill="url(#g)" />
+            <g fill="none" stroke="currentColor" opacity=".25">
+              <rect x="80" y="70" width="440" height="260" rx="12" />
+              <rect x="110" y="110" width="180" height="120" rx="12" />
+              <rect x="320" y="110" width="150" height="80" rx="12" />
+              <rect x="320" y="210" width="150" height="60" rx="12" />
+            </g>
+            <text x="300" y="360" text-anchor="middle" fill="currentColor" opacity=".6" font-size="18">Mockup produs 3D</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ——— Highlights ——— -->
+  <section class="highlights" id="noutati">
+    <div class="wrap">
+      <div class="cards">
+        <article class="card">
+          <h3>Calitate de top</h3>
+          <p>Straturi fine (până la 0.08mm), materiale premium și test de rezistență pentru fiecare lot.</p>
+        </article>
+        <article class="card">
+          <h3>Design minimalist</h3>
+          <p>Estetică curată, focus pe produs. Paletă neutră, imagini pe fundal simplu.</p>
+        </article>
+        <article class="card">
+          <h3>Personalizare</h3>
+          <p>Trimite modelul tău sau alege din bibliotecă. Culori, materiale și finisaje.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— Showcase Rows ——— -->
+  <section class="wrap row" id="produse">
+    <div class="copy">
+      <h2>Printuri care ies în evidență.</h2>
+      <p>De la accesorii pentru birou până la piese funcționale, fiecare produs e optimizat pentru o suprafață netedă și toleranțe precise.</p>
+      <div class="cta">
+        <a class="btn primary" href="#magazin">Cumpără acum</a>
+        <a class="btn ghost" href="#detalii">Află detalii</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="media">
+        <svg viewBox="0 0 800 450" aria-label="Imagine produs">
+          <defs>
+            <linearGradient id="grad" x1="0" x2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".12"/><stop offset="100%" stop-color="currentColor" stop-opacity=".02"/></linearGradient>
+          </defs>
+          <rect width="800" height="450" fill="url(#grad)"/>
+          <g fill="none" stroke="currentColor" opacity=".35" stroke-width="2">
+            <circle cx="240" cy="220" r="90"/>
+            <rect x="420" y="120" width="220" height="180" rx="20"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap row flip">
+    <div class="panel">
+      <div class="media">
+        <svg viewBox="0 0 800 450" aria-label="Imagine proces">
+          <rect width="800" height="450" fill="currentColor" opacity=".05"/>
+          <g stroke="currentColor" fill="none" opacity=".3">
+            <path d="M80 360h640"/>
+            <path d="M120 320h560M160 280h480M200 240h400"/>
+          </g>
+          <text x="400" y="230" text-anchor="middle" fill="currentColor" opacity=".6" font-size="20">Timelapse print 3D</text>
+        </svg>
+      </div>
+    </div>
+    <div class="copy">
+      <h2>Optimizat pentru performanță.</h2>
+      <p>Magazin performant.</p>
+      <div class="cta">
+        <a class="btn ghost" href="#documentatie">Documentație</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— Product Grid ——— -->
+  <section class="wrap" id="magazin" style="padding:48px 0">
+    <h2 style="font-size:clamp(24px,4vw,40px);margin:0 0 16px">Magazin</h2>
+    <div class="grid cols-3">
+      <!-- Tile 1 -->
+      <article class="tile" aria-label="Suport căști">
+        <div class="shot">
+          <svg viewBox="0 0 400 300" aria-hidden="true">
+            <rect width="400" height="300" fill="currentColor" opacity=".06"/>
+            <g stroke="currentColor" fill="none" opacity=".35">
+              <path d="M120 210c0-44 36-80 80-80s80 36 80 80"/>
+              <rect x="160" y="140" width="80" height="70" rx="12"/>
+            </g>
+          </svg>
+        </div>
+        <div class="meta">
+          <h4>Suport căști</h4>
+          <div class="price">de la 79,99 RON</div>
+        </div>
+      </article>
+      <!-- Tile 2 -->
+      <article class="tile" aria-label="Organizer birou">
+        <div class="shot">
+          <svg viewBox="0 0 400 300" aria-hidden="true">
+            <rect width="400" height="300" fill="currentColor" opacity=".06"/>
+            <g stroke="currentColor" fill="none" opacity=".35">
+              <rect x="90" y="100" width="220" height="120" rx="16"/>
+              <path d="M90 160h220"/>
+            </g>
+          </svg>
+        </div>
+        <div class="meta">
+          <h4>Organizer birou</h4>
+          <div class="price">de la 49,99 RON</div>
+        </div>
+      </article>
+      <!-- Tile 3 -->
+      <article href="produse.html" class="tile" aria-label="Mai multe produse">
+        <div class="shot">
+          <svg viewBox="0 0 400 300" aria-hidden="true">
+            <rect width="400" height="300" fill="currentColor" opacity=".06"/>
+            <g stroke="currentColor" fill="none" opacity=".35">
+              <path d="M100 150h200v100H100z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="meta">
+          <h4>Mai multe produse</h4>
+          <a href="produse.html" class="btn-tile">Accesează</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ——— Footer ——— -->
+  <footer id="suport">
+    <div class="wrap cols">
+      <div>
+        <strong>3Dbestprints</strong>
+        <p style="margin-top:8px">© <span id="y"></span> 3Dbestprints. Toate drepturile rezervate.</p>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--text)">Companie</div>
+        <a href="#despre">Despre</a><br>
+        <a href="#cariera">Locatii</a><br>
+        <a href="#press">Informatii</a>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--text)">Asistență</div>
+        <a href="#intrebari">Întrebări frecvente</a><br>
+        <a href="#retur">Retur & garanție</a><br>
+        <a href="#contact">Contact</a>
+      </div>
+      <div>
+        <div style="font-weight:600;color:var(--text)">Legal</div>
+        <a href="#termeni">Termeni</a><br>
+        <a href="#confidentialitate">Confidențialitate</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const formModal = document.getElementById("formModal");
-    const submitBtn = document.getElementById("submitBtn");
-    const switchForm = document.getElementById("switchForm");
-    const authContainer = document.getElementById("authContainer");
+    // Mobile drawer
+    const btn = document.getElementById('hamburger');
+    const drawer = document.getElementById('drawer');
+    btn?.addEventListener('click', () => {
+      const open = drawer.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+      drawer.setAttribute('aria-hidden', String(!open));
+    });
 
-    let isLogin = true;
+    // Current year
+    document.getElementById('y').textContent = new Date().getFullYear();
 
-    function openForm(loginMode){
-      isLogin = loginMode;
-      formModal.style.display = "flex";
-      if(isLogin){
-        submitBtn.textContent = "Login";
-        switchForm.textContent = "Nu ai cont? Înregistrează-te";
-      } else {
-        submitBtn.textContent = "Register";
-        switchForm.textContent = "Ai deja cont? Conectează-te";
-      }
-      loginBtn.style.display = "none";
-      registerBtn.style.display = "none";
-      authContainer.style.transform = "scale(1.05)";
-      setTimeout(()=>authContainer.style.transform="scale(1)", 200);
+    // Smooth anchor scroll (reduced motion aware)
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced) {
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const id = a.getAttribute('href');
+          if (id && id.length > 1) {
+            const el = document.querySelector(id);
+            if (el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+          }
+        });
+      });
     }
-
-    loginBtn.addEventListener("click", ()=> openForm(true));
-    registerBtn.addEventListener("click", ()=> openForm(false));
-
-    switchForm.addEventListener("click", ()=>{
-      isLogin = !isLogin;
-      if(isLogin){
-        submitBtn.textContent = "Login";
-        switchForm.textContent = "Nu ai cont? Înregistrează-te";
-      } else {
-        submitBtn.textContent = "Register";
-        switchForm.textContent = "Ai deja cont? Conectează-te";
-      }
-    });
-
-    submitBtn.addEventListener("click", ()=>{
-      const email = document.getElementById("email").value.trim();
-      const pass = document.getElementById("password").value.trim();
-      if(!email || !pass){ alert("Completează toate câmpurile!"); return; }
-
-      if(isLogin){
-        const userData = JSON.parse(localStorage.getItem("user_" + email));
-        if(!userData){ alert("Nu există cont cu acest email."); return; }
-        if(userData.password !== pass){ alert("Parolă greșită!"); return; }
-        localStorage.setItem("currentUser", email);
-        alert("Te-ai logat cu succes!");
-      } else {
-        if(localStorage.getItem("user_" + email)){ alert("Există deja un cont cu acest email!"); return; }
-        localStorage.setItem("user_" + email, JSON.stringify({password: pass}));
-        localStorage.setItem("currentUser", email);
-        localStorage.setItem("cart_" + email, JSON.stringify([]));
-        alert("Cont creat și logat cu succes!");
-      }
-      formModal.style.display = "none";
-      loginBtn.style.display = "block";
-      registerBtn.style.display = "block";
-    });
   </script>
 </body>
 </html>
