@@ -5,37 +5,129 @@
   <title>Autentificare — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{font-family:sans-serif;background:#f5f5f7;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
-    .box{background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,.1);width:300px}
-    h1{margin-top:0;text-align:center;font-size:20px}
+    body{font-family:sans-serif;background:#f5f5f7;margin:0}
+    header{background:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .btn{padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+    .user-btn{background:#0071e3;color:#fff}
+    .cart-btn{background:#111;color:#fff}
+
+    /* modal */
+    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
+    .modal-content{background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,.2);width:300px}
+    .modal-content h2{text-align:center;margin-top:0}
     input{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:6px}
-    button{width:100%;padding:10px;background:#0071e3;color:#fff;border:none;border-radius:999px;font-weight:600;cursor:pointer}
-    button:hover{background:#005bb5}
+    .submit-btn{width:100%;padding:10px;background:#0071e3;color:#fff;border:none;border-radius:999px;font-weight:600;cursor:pointer}
+    .switch{text-align:center;margin-top:10px;font-size:14px;color:#0071e3;cursor:pointer}
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Autentificare</h1>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Parolă" required>
-    <button onclick="login()">Conectează-te</button>
+  <header>
+    <h1>3Dbestprints</h1>
+    <div style="display:flex;gap:10px;">
+      <button class="btn cart-btn" onclick="window.location.href='cos.html'">🛒 Coș</button>
+      <button class="btn user-btn" id="userBtn">User</button>
+    </div>
+  </header>
+
+  <main style="padding:20px;max-width:600px;margin:auto;text-align:center">
+    <h2>Bine ai venit!</h2>
+    <p>Aici te poți loga sau înregistra pentru a-ți salva coșul de cumpărături.</p>
+  </main>
+
+  <!-- Modal login/register -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <h2 id="formTitle">Login</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Parolă" required>
+      <button class="submit-btn" id="submitBtn">Login</button>
+      <div class="switch" id="switchForm">Nu ai cont? Înregistrează-te</div>
+    </div>
   </div>
 
   <script>
-    function login(){
+    const userBtn = document.getElementById("userBtn");
+    const modal = document.getElementById("authModal");
+    const formTitle = document.getElementById("formTitle");
+    const submitBtn = document.getElementById("submitBtn");
+    const switchForm = document.getElementById("switchForm");
+
+    let isLogin = true; // implicit login
+
+    // dacă e logat deja, afișăm emailul
+    const currentUser = localStorage.getItem("currentUser");
+    if(currentUser){
+      userBtn.textContent = currentUser;
+    }
+
+    userBtn.addEventListener("click", ()=>{
+      if(localStorage.getItem("currentUser")){
+        // dacă e logat, oferim opțiune de logout
+        if(confirm("Vrei să te deloghezi?")){
+          localStorage.removeItem("currentUser");
+          userBtn.textContent = "User";
+          alert("Te-ai delogat!");
+        }
+      } else {
+        modal.style.display = "flex";
+      }
+    });
+
+    switchForm.addEventListener("click", ()=>{
+      isLogin = !isLogin;
+      if(isLogin){
+        formTitle.textContent = "Login";
+        submitBtn.textContent = "Login";
+        switchForm.textContent = "Nu ai cont? Înregistrează-te";
+      } else {
+        formTitle.textContent = "Register";
+        submitBtn.textContent = "Register";
+        switchForm.textContent = "Ai deja cont? Conectează-te";
+      }
+    });
+
+    submitBtn.addEventListener("click", ()=>{
       const email = document.getElementById("email").value.trim();
       const pass = document.getElementById("password").value.trim();
       if(!email || !pass){
-        alert("Completează email și parolă!");
+        alert("Completează toate câmpurile!");
         return;
       }
-      // salvăm userul curent
-      localStorage.setItem("currentUser", email);
-      // dacă nu are coș creat, facem unul gol
-      if(!localStorage.getItem("cart_" + email)){
+      if(isLogin){
+        // LOGIN
+        const userData = JSON.parse(localStorage.getItem("user_" + email));
+        if(!userData){
+          alert("Nu există cont cu acest email. Te rog să te înregistrezi.");
+          return;
+        }
+        if(userData.password !== pass){
+          alert("Parolă greșită!");
+          return;
+        }
+        localStorage.setItem("currentUser", email);
+        userBtn.textContent = email;
+        modal.style.display = "none";
+        alert("Te-ai logat cu succes!");
+      } else {
+        // REGISTER
+        if(localStorage.getItem("user_" + email)){
+          alert("Există deja un cont cu acest email!");
+          return;
+        }
+        localStorage.setItem("user_" + email, JSON.stringify({password: pass}));
+        localStorage.setItem("currentUser", email);
         localStorage.setItem("cart_" + email, JSON.stringify([]));
+        userBtn.textContent = email;
+        modal.style.display = "none";
+        alert("Cont creat și logat cu succes!");
       }
-      window.location.href = "produse.html";
+    });
+
+    // închidere modal când apeși pe fundal
+    window.onclick = (e)=>{
+      if(e.target === modal){
+        modal.style.display = "none";
+      }
     }
   </script>
 </body>
