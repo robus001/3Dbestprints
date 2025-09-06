@@ -49,6 +49,9 @@
     .total{font-weight:600;font-size:18px;text-align:right;margin-top:12px}
     .checkout-btn{margin-top:20px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-weight:600;font-size:16px;cursor:pointer}
   </style>
+
+  <!-- Stripe JS -->
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <!-- Nav -->
@@ -93,7 +96,7 @@
       <h2>Comanda ta</h2>
       <div id="orderItems" class="summary"></div>
       <div id="orderTotal" class="total">Total: 0.00 RON</div>
-      <button class="checkout-btn" id="checkoutBtn">Continuă la plată</button>
+      <button class="checkout-btn" id="checkoutBtn">Plătește cu Stripe</button>
     </div>
   </main>
 
@@ -104,7 +107,7 @@
     if(email){
       loginBtn.textContent = email;
       loginBtn.href = "#";
-      loginBtn.addEventListener("click", ()=>{
+      loginBtn.addEventListener("click", ()=> {
         if(confirm("Vrei să te deloghezi?")){
           localStorage.removeItem("currentUser");
           window.location.href = "index.html";
@@ -123,9 +126,10 @@
       const orderTotal = document.getElementById("orderTotal");
       const checkoutBtn = document.getElementById("checkoutBtn");
 
+      let total = 0;
       function renderOrder(){
         orderItems.innerHTML = "";
-        let total = 0;
+        total = 0;
         cart.forEach(p=>{
           const div = document.createElement("div");
           div.textContent = `${p.name} — ${p.price.toFixed(2)} RON`;
@@ -136,10 +140,24 @@
       }
       renderOrder();
 
-      // buton simplu
-      checkoutBtn.addEventListener("click", ()=>{
-        alert(`Suma totală este: ${orderTotal.textContent.replace("Total: ","")}\nVeți fi direcționat la pagina de plată.`);
-        // aici poți adăuga redirect: window.location.href="pagina_de_plata.html";
+      // Stripe Checkout button
+      const stripe = Stripe("pk_test_51Q0pYWEPOakaAu5Ae8CsVKtyAlCVAl90rAVNZeiqKIQqw029M8wu4E6VX5wEhy1x18arp2OdhbprFds2QBG26P9G009CcME5Xs");
+
+      checkoutBtn.addEventListener("click", async ()=>{
+        if(cart.length === 0){
+          alert("Coșul este gol!");
+          return;
+        }
+
+        const response = await fetch("/create-checkout-session", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({amount: Math.round(total*100)})
+        });
+
+        const session = await response.json();
+        const result = await stripe.redirectToCheckout({sessionId: session.id});
+        if(result.error) alert(result.error.message);
       });
     }
   </script>
