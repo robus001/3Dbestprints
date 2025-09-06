@@ -23,6 +23,8 @@
       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     }
     a{text-decoration:none;color:inherit}
+
+    /* Nav */
     .nav{position:sticky;top:0;z-index:1000;backdrop-filter:saturate(180%) blur(20px);
       background:color-mix(in srgb, var(--bg) 85%, transparent);border-bottom:1px solid var(--line)}
     .nav .bar{display:flex;align-items:center;gap:16px;height:56px;max-width:1200px;margin:0 auto;padding:0 20px}
@@ -32,6 +34,7 @@
     .btn.primary{background:var(--accent);color:#fff}
     .btn.ghost{border:1px solid var(--line);color:var(--text)}
 
+    /* Checkout */
     .wrap{max-width:800px;margin:32px auto;padding:0 20px}
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:24px}
     .card h2{font-size:20px;margin-bottom:16px}
@@ -48,6 +51,7 @@
   </style>
 </head>
 <body>
+  <!-- Nav -->
   <header class="nav">
     <div class="bar">
       <a class="logo" href="index.html" aria-label="Acasă"></a>
@@ -84,7 +88,7 @@
       </form>
     </div>
 
-    <!-- Comanda -->
+    <!-- Bon -->
     <div class="card">
       <h2>Comanda ta</h2>
       <div id="orderItems" class="summary"></div>
@@ -94,12 +98,13 @@
   </main>
 
   <script>
+    // login display
     const email = localStorage.getItem("currentUser");
     const loginBtn = document.getElementById("loginBtn");
     if(email){
       loginBtn.textContent = email;
       loginBtn.href = "#";
-      loginBtn.addEventListener("click", ()=> {
+      loginBtn.addEventListener("click", ()=>{
         if(confirm("Vrei să te deloghezi?")){
           localStorage.removeItem("currentUser");
           window.location.href = "index.html";
@@ -107,6 +112,7 @@
       });
     }
 
+    // load cart
     if(!email){
       alert("Trebuie să fii logat!");
       window.location.href = "login.html";
@@ -120,7 +126,7 @@
       function renderOrder(){
         orderItems.innerHTML = "";
         let total = 0;
-        cart.forEach(p => {
+        cart.forEach(p=>{
           const div = document.createElement("div");
           div.textContent = `${p.name} — ${p.price.toFixed(2)} RON`;
           orderItems.appendChild(div);
@@ -128,14 +134,12 @@
         });
         orderTotal.textContent = `Total: ${total.toFixed(2)} RON`;
       }
-
       renderOrder();
 
-      // Buton simplu de plată
-      checkoutBtn.addEventListener("click", ()=> {
-        const total = orderTotal.textContent.replace("Total: ","");
-        alert(`Suma totală este ${total}.\nVeți fi direcționat către pagina de plată.`);
-        // aici poți face redirect la o altă pagină: window.location.href="pagina_de_plata.html";
+      // buton simplu
+      checkoutBtn.addEventListener("click", ()=>{
+        alert(`Suma totală este: ${orderTotal.textContent.replace("Total: ","")}\nVeți fi direcționat la pagina de plată.`);
+        // aici poți adăuga redirect: window.location.href="pagina_de_plata.html";
       });
     }
   </script>
