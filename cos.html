@@ -33,99 +33,119 @@
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       background:var(--bg);
       color:var(--text);
-      padding:20px;
       line-height:1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    h1{text-align:center;margin-bottom:30px;font-weight:600}
+    a{color:inherit;text-decoration:none}
 
-    .container{
-      display:grid;
-      grid-template-columns:2fr 1fr;
-      gap:20px;
-      max-width:1200px;
-      margin:0 auto;
+    /* Nav */
+    .nav{
+      position:sticky;top:0;z-index:1000;
+      backdrop-filter:saturate(180%) blur(20px);
+      background:color-mix(in srgb, var(--bg) 85%, transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .nav .bar{display:flex;align-items:center;gap:16px;height:56px;max-width:1200px;margin:0 auto;padding:0 20px}
+    .logo{width:24px;height:24px;border-radius:6px;background:currentColor;display:inline-block}
+    .spacer{flex:1}
+    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{border:1px solid var(--line);color:var(--text)}
+
+    /* Layout coș */
+    .wrap{max-width:1200px;margin:32px auto;padding:0 20px;display:grid;gap:32px}
+    @media(min-width:900px){
+      .wrap{grid-template-columns:2fr 1fr}
     }
 
-    .cart-items,
-    .summary{
+    .cart-box{
       background:var(--card);
-      padding:20px;
       border-radius:var(--radius);
       box-shadow:var(--shadow);
+      padding:20px;
     }
-
-    .item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:16px;
-      border-bottom:1px solid var(--line);
-      font-size:16px;
-    }
+    .item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:16px}
     .item span{flex:1}
-    .remove-btn{
-      color:#ff3b30;
-      font-weight:bold;
-      font-size:20px;
-      cursor:pointer;
-      border:none;
-      background:none;
-      transition:all .2s;
-    }
+    .remove-btn{color:#ff3b30;font-weight:bold;font-size:20px;cursor:pointer;border:none;background:none;margin-left:10px;transition:transform .2s}
     .remove-btn:hover{transform:scale(1.2)}
 
-    .summary h2{margin-bottom:15px;font-size:20px;font-weight:600}
-    .summary-list{border-bottom:1px solid var(--line);padding-bottom:10px}
-    .summary-item{display:flex;justify-content:space-between;margin:6px 0;color:var(--muted);font-size:14px}
-    .total{font-weight:600;margin-top:15px;font-size:18px;text-align:right}
-
-    .btn{
-      margin-top:20px;
-      display:block;
-      width:100%;
-      padding:14px;
-      background:var(--accent);
-      color:#fff;
-      text-align:center;
-      border:none;
-      border-radius:999px;
-      font-weight:600;
-      cursor:pointer;
-      font-size:16px;
-      transition:background .2s;
+    .summary{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      height:fit-content;
     }
-    .btn:hover{background:#005bb5}
+    .summary h2{font-size:20px;margin-bottom:10px}
+    .total{font-weight:600;font-size:18px;text-align:right;margin-top:10px}
+    .btn.pay{margin-top:10px;width:100%;text-align:center;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-weight:600;cursor:pointer}
   </style>
 </head>
 <body>
-  <h1>Coșul tău</h1>
-  <div class="container">
-    <div class="cart-items" id="cartBox"></div>
-    <div class="summary" id="summaryBox"></div>
-  </div>
+
+  <!-- Nav -->
+  <header class="nav">
+    <div class="bar">
+      <a class="logo" href="index.html" aria-label="Acasă"></a>
+      <div class="spacer"></div>
+      <a class="btn ghost" id="loginBtn" href="login.html">Login</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Produse -->
+    <div class="cart-box" id="cartBox"></div>
+
+    <!-- Bon -->
+    <aside class="summary" id="summaryBox">
+      <h2>Bon</h2>
+      <div id="summaryItems"></div>
+      <div class="total" id="summaryTotal">Total: 0.00 RON</div>
+      <button class="btn pay">Continuă la plată</button>
+    </aside>
+  </main>
 
   <script>
     const email = localStorage.getItem("currentUser");
+    const loginBtn = document.getElementById("loginBtn");
+
+    if(email){
+      loginBtn.textContent = email;
+      loginBtn.href = "#";
+      loginBtn.addEventListener("click", ()=>{
+        if(confirm("Vrei să te deloghezi?")){
+          localStorage.removeItem("currentUser");
+          window.location.reload();
+        }
+      });
+    }
+
     if(!email){
       alert("Trebuie să fii logat!");
       window.location.href = "login.html";
     } else {
       const key = "cart_" + email;
       let cart = JSON.parse(localStorage.getItem(key) || "[]");
-      const cartBox = document.getElementById("cartBox");
-      const summaryBox = document.getElementById("summaryBox");
+      const box = document.getElementById("cartBox");
+      const summaryItems = document.getElementById("summaryItems");
+      const summaryTotal = document.getElementById("summaryTotal");
 
       function renderCart(){
-        cartBox.innerHTML = "";
-        summaryBox.innerHTML = "";
-
+        box.innerHTML = "";
+        summaryItems.innerHTML = "";
         if(cart.length === 0){
-          cartBox.innerHTML = "<p>Coșul este gol.</p>";
+          box.innerHTML = "<p>Coșul este gol.</p>";
+          summaryTotal.textContent = "Total: 0.00 RON";
           return;
         }
 
         let total = 0;
         cart.forEach((p, index)=>{
+          // listă principală
           const div = document.createElement("div");
           div.className = "item";
           div.innerHTML = `
@@ -133,41 +153,23 @@
             <span>${p.price.toFixed(2)} RON</span>
             <button class="remove-btn" data-index="${index}">×</button>
           `;
-          cartBox.appendChild(div);
+          box.appendChild(div);
+
+          // bon dreapta
+          const sItem = document.createElement("div");
+          sItem.textContent = `${p.name} — ${p.price.toFixed(2)} RON`;
+          summaryItems.appendChild(sItem);
 
           total += p.price;
         });
 
-        // Bon pe partea dreaptă
-        const title = document.createElement("h2");
-        title.textContent = "Rezumat comandă";
-        summaryBox.appendChild(title);
+        summaryTotal.textContent = `Total: ${total.toFixed(2)} RON`;
 
-        const list = document.createElement("div");
-        list.className = "summary-list";
-        cart.forEach(p=>{
-          const row = document.createElement("div");
-          row.className = "summary-item";
-          row.innerHTML = `<span>${p.name}</span><span>${p.price.toFixed(2)} RON</span>`;
-          list.appendChild(row);
-        });
-        summaryBox.appendChild(list);
-
-        const totalDiv = document.createElement("div");
-        totalDiv.className = "total";
-        totalDiv.textContent = `Total: ${total.toFixed(2)} RON`;
-        summaryBox.appendChild(totalDiv);
-
-        const payBtn = document.createElement("button");
-        payBtn.className = "btn";
-        payBtn.textContent = "Continuă la plată";
-        summaryBox.appendChild(payBtn);
-
-        // adaugă event pentru remove
-        cartBox.querySelectorAll(".remove-btn").forEach(btn=>{
+        // butoane remove
+        box.querySelectorAll(".remove-btn").forEach(btn=>{
           btn.addEventListener("click", ()=>{
             const idx = parseInt(btn.dataset.index);
-            cart.splice(idx,1);
+            cart.splice(idx, 1);
             localStorage.setItem(key, JSON.stringify(cart));
             renderCart();
           });
@@ -179,4 +181,3 @@
   </script>
 </body>
 </html>
-
