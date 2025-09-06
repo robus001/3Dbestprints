@@ -5,28 +5,44 @@
   <title>Autentificare — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Font & reset */
-    body, html {margin:0; padding:0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background:#f5f5f7; display:flex; justify-content:center; align-items:center; height:100vh;}
-    
-    /* Container */
-    .auth-container {background:#fff; padding:40px 30px; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.1); width:320px; text-align:center; transition: transform 0.3s ease;}
-    
-    h1 {margin-bottom:30px; font-size:28px; color:#111;}
-    
-    .btn {display:block; width:100%; padding:14px 0; margin:12px 0; font-size:16px; font-weight:600; border:none; border-radius:12px; cursor:pointer; transition: all 0.2s ease;}
+    /* Font Apple-ish și reset */
+    body, html {
+      margin:0; padding:0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:#f5f5f7; display:flex; justify-content:center; align-items:center; height:100vh;
+      color:#111; /* text mai închis */
+    }
+
+    /* Container central */
+    .auth-container {
+      background:#fff; padding:40px 30px; border-radius:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.1);
+      width:320px; text-align:center;
+      transition: transform 0.3s ease;
+    }
+
+    h1 {margin-bottom:30px; font-size:28px; font-weight:700;}
+
+    .btn {
+      display:block; width:100%; padding:14px 0; margin:12px 0; font-size:16px; font-weight:600;
+      border:none; border-radius:12px; cursor:pointer; transition: all 0.2s ease;
+    }
     .btn-login {background:#0071e3; color:#fff;}
     .btn-register {background:#fff; color:#0071e3; border:2px solid #0071e3;}
-    
+
     .btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
     .btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-    
+
     /* Modal inputs */
-    .modal {display:none; flex-direction:column; gap:12px;}
-    input {width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px;}
-    .submit-btn {background:#0071e3; color:#fff; border:none; padding:12px; border-radius:999px; font-weight:600; cursor:pointer; transition: all 0.2s ease;}
+    .modal {display:none; flex-direction:column; gap:12px; margin-top:20px;}
+    input {width:100%; padding:12px; border:1px solid #ccc; border-radius:10px; font-size:14px;}
+    .submit-btn {
+      background:#0071e3; color:#fff; border:none; padding:12px;
+      border-radius:999px; font-weight:600; cursor:pointer; transition: all 0.2s ease;
+    }
     .submit-btn:hover {transform: translateY(-2px); box-shadow:0 6px 12px rgba(0,0,0,0.1);}
     .submit-btn:active {transform: translateY(1px); box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-    
+
     .switch {margin-top:10px; font-size:14px; color:#0071e3; cursor:pointer;}
   </style>
 </head>
@@ -35,7 +51,7 @@
     <h1>3Dbestprints</h1>
     <button class="btn btn-login" id="loginBtn">Login</button>
     <button class="btn btn-register" id="registerBtn">Înregistrează-te</button>
-    
+
     <div class="modal" id="formModal">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Parolă" required>
