@@ -4,101 +4,87 @@
   <meta charset="utf-8">
   <title>Coș — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    /* ——— Design tokens (aceleași ca în index.html) ——— */
     :root{
       --bg: #ffffff;
       --text: #111111;
       --muted: #6e6e73;
       --line: #d2d2d7;
-      --accent: #0071e3; 
-      --radius: 20px;
+      --accent: #0071e3;
+      --card: #fff;
+      --radius: 18px;
       --shadow: 0 10px 30px rgba(0,0,0,.08);
     }
     @media (prefers-color-scheme: dark){
       :root{
-        --bg: #000000;
+        --bg: #1c1c1e;
         --text: #f5f5f7;
         --muted: #a1a1a6;
         --line: #3a3a3c;
-        --shadow: 0 10px 30px rgba(0,0,0,.4);
+        --accent: #0a84ff;
+        --card: #2c2c2e;
+        --shadow: 0 10px 30px rgba(0,0,0,.6);
       }
     }
 
-    /* ——— Base ——— */
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     body{
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      margin: 0;
-      padding: 40px 20px;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
+      line-height:1.5;
     }
-    h1{
-      text-align:center;
-      font-size: clamp(24px, 4vw, 40px);
-      margin-bottom: 40px;
-    }
+    h1{text-align:center;margin-bottom:30px;font-weight:600}
 
-    /* Layout */
     .container{
       display:grid;
-      grid-template-columns: 1fr 360px;
-      gap: 30px;
-      max-width: 1200px;
-      margin: 0 auto;
+      grid-template-columns:2fr 1fr;
+      gap:20px;
+      max-width:1200px;
+      margin:0 auto;
     }
 
-    /* Card Apple style */
-    .products, .summary{
-      background: var(--bg);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
+    .cart-items,
+    .summary{
+      background:var(--card);
+      padding:20px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
 
-    /* Produse */
     .item{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      padding:12px 0;
+      padding:16px;
       border-bottom:1px solid var(--line);
+      font-size:16px;
     }
     .item span{flex:1}
     .remove-btn{
       color:#ff3b30;
       font-weight:bold;
-      font-size:18px;
+      font-size:20px;
       cursor:pointer;
       border:none;
       background:none;
-      margin-left:10px;
-      transition: all 0.2s;
+      transition:all .2s;
     }
-    .remove-btn:hover{transform: scale(1.2);}
+    .remove-btn:hover{transform:scale(1.2)}
 
-    /* Bon */
-    .summary h2{
-      font-size:20px;
-      margin:0 0 16px;
-    }
-    .total{
-      font-weight:600;
-      text-align:right;
-      margin-top:15px;
-      font-size:18px;
-    }
+    .summary h2{margin-bottom:15px;font-size:20px;font-weight:600}
+    .summary-list{border-bottom:1px solid var(--line);padding-bottom:10px}
+    .summary-item{display:flex;justify-content:space-between;margin:6px 0;color:var(--muted);font-size:14px}
+    .total{font-weight:600;margin-top:15px;font-size:18px;text-align:right}
+
     .btn{
       margin-top:20px;
       display:block;
       width:100%;
       padding:14px;
-      background: var(--accent);
+      background:var(--accent);
       color:#fff;
       text-align:center;
       border:none;
@@ -106,14 +92,15 @@
       font-weight:600;
       cursor:pointer;
       font-size:16px;
+      transition:background .2s;
     }
-    .btn:hover{background:#005bbd}
+    .btn:hover{background:#005bb5}
   </style>
 </head>
 <body>
   <h1>Coșul tău</h1>
   <div class="container">
-    <div class="products" id="cartBox"></div>
+    <div class="cart-items" id="cartBox"></div>
     <div class="summary" id="summaryBox"></div>
   </div>
 
@@ -125,15 +112,15 @@
     } else {
       const key = "cart_" + email;
       let cart = JSON.parse(localStorage.getItem(key) || "[]");
-      const box = document.getElementById("cartBox");
-      const summary = document.getElementById("summaryBox");
+      const cartBox = document.getElementById("cartBox");
+      const summaryBox = document.getElementById("summaryBox");
 
       function renderCart(){
-        box.innerHTML = "";
-        summary.innerHTML = "";
+        cartBox.innerHTML = "";
+        summaryBox.innerHTML = "";
 
         if(cart.length === 0){
-          box.innerHTML = "<p>Coșul este gol.</p>";
+          cartBox.innerHTML = "<p>Coșul este gol.</p>";
           return;
         }
 
@@ -146,23 +133,41 @@
             <span>${p.price.toFixed(2)} RON</span>
             <button class="remove-btn" data-index="${index}">×</button>
           `;
-          box.appendChild(div);
+          cartBox.appendChild(div);
 
           total += p.price;
         });
 
-        summary.innerHTML = `
-          <h2>Rezumat comandă</h2>
-          <p>Produse: ${cart.length}</p>
-          <div class="total">Total: ${total.toFixed(2)} RON</div>
-          <button class="btn">Continuă la plată</button>
-        `;
+        // Bon pe partea dreaptă
+        const title = document.createElement("h2");
+        title.textContent = "Rezumat comandă";
+        summaryBox.appendChild(title);
 
-        // remove logic
-        box.querySelectorAll(".remove-btn").forEach(btn=>{
+        const list = document.createElement("div");
+        list.className = "summary-list";
+        cart.forEach(p=>{
+          const row = document.createElement("div");
+          row.className = "summary-item";
+          row.innerHTML = `<span>${p.name}</span><span>${p.price.toFixed(2)} RON</span>`;
+          list.appendChild(row);
+        });
+        summaryBox.appendChild(list);
+
+        const totalDiv = document.createElement("div");
+        totalDiv.className = "total";
+        totalDiv.textContent = `Total: ${total.toFixed(2)} RON`;
+        summaryBox.appendChild(totalDiv);
+
+        const payBtn = document.createElement("button");
+        payBtn.className = "btn";
+        payBtn.textContent = "Continuă la plată";
+        summaryBox.appendChild(payBtn);
+
+        // adaugă event pentru remove
+        cartBox.querySelectorAll(".remove-btn").forEach(btn=>{
           btn.addEventListener("click", ()=>{
             const idx = parseInt(btn.dataset.index);
-            cart.splice(idx, 1);
+            cart.splice(idx,1);
             localStorage.setItem(key, JSON.stringify(cart));
             renderCart();
           });
@@ -174,3 +179,4 @@
   </script>
 </body>
 </html>
+
