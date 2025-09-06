@@ -152,8 +152,28 @@
       </nav>
       <div class="spacer"></div>
       <!-- Butoane noi -->
-      <a class="btn ghost" href="login.html" aria-label="Login">Login</a>
-      <a class="btn ghost" href="cos.html" aria-label="Coș">Coș</a>
+      <!-- Butoane noi -->
+<a class="btn ghost" id="loginBtn" href="login.html" aria-label="Login">Login</a>
+<a class="btn ghost" href="cos.html" aria-label="Coș">Coș</a>
+
+<script>
+  // Verificăm dacă există utilizator logat
+  const loginBtn = document.getElementById('loginBtn');
+  const currentUser = localStorage.getItem('currentUser');
+
+  if(currentUser){
+    loginBtn.textContent = currentUser; // afișăm email-ul
+    loginBtn.href = "#"; // dacă vrei poți să nu mai ducă la login.html
+    loginBtn.addEventListener('click', ()=>{
+      if(confirm("Vrei să te deloghezi?")){
+        localStorage.removeItem('currentUser');
+        loginBtn.textContent = "Login";
+        loginBtn.href = "login.html";
+        alert("Te-ai delogat!");
+      }
+    });
+  }
+</script>
       <button class="mobile-toggle" aria-label="Deschide meniul" aria-expanded="false" id="hamburger">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
       </button>
