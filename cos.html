@@ -5,117 +5,116 @@
   <title>Coș — 3Dbestprints</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
+    /* ——— Design tokens (aceleași ca în index.html) ——— */
+    :root{
+      --bg: #ffffff;
+      --text: #111111;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #0071e3; 
+      --radius: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #000000;
+        --text: #f5f5f7;
+        --muted: #a1a1a6;
+        --line: #3a3a3c;
+        --shadow: 0 10px 30px rgba(0,0,0,.4);
+      }
+    }
+
+    /* ——— Base ——— */
+    *{box-sizing:border-box}
+    body{
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #f5f5f7;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
       margin: 0;
-      padding: 20px;
-      color: #111;
+      padding: 40px 20px;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
+    h1{
+      text-align:center;
+      font-size: clamp(24px, 4vw, 40px);
+      margin-bottom: 40px;
     }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 350px;
-      gap: 20px;
-      max-width: 1100px;
+
+    /* Layout */
+    .container{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap: 30px;
+      max-width: 1200px;
       margin: 0 auto;
     }
-    /* Stânga = produsele */
-    .products {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.1);
-      padding: 20px;
+
+    /* Card Apple style */
+    .products, .summary{
+      background: var(--bg);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
     }
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fafafa;
+
+    /* Produse */
+    .item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
     }
-    .item span {
-      flex: 1;
-    }
-    .remove-btn {
-      color: #ff3b30;
-      font-weight: bold;
-      font-size: 20px;
-      cursor: pointer;
-      border: none;
-      background: none;
-      margin-left: 10px;
+    .item span{flex:1}
+    .remove-btn{
+      color:#ff3b30;
+      font-weight:bold;
+      font-size:18px;
+      cursor:pointer;
+      border:none;
+      background:none;
+      margin-left:10px;
       transition: all 0.2s;
     }
-    .remove-btn:hover {
-      transform: scale(1.2);
+    .remove-btn:hover{transform: scale(1.2);}
+
+    /* Bon */
+    .summary h2{
+      font-size:20px;
+      margin:0 0 16px;
     }
-    /* Dreapta = bon */
-    .summary {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.1);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: fit-content;
+    .total{
+      font-weight:600;
+      text-align:right;
+      margin-top:15px;
+      font-size:18px;
     }
-    .summary h2 {
-      margin-top: 0;
-      font-size: 20px;
-      margin-bottom: 15px;
+    .btn{
+      margin-top:20px;
+      display:block;
+      width:100%;
+      padding:14px;
+      background: var(--accent);
+      color:#fff;
+      text-align:center;
+      border:none;
+      border-radius:999px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:16px;
     }
-    .summary ul {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 15px 0;
-    }
-    .summary ul li {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 15px;
-    }
-    .total {
-      font-weight: 600;
-      text-align: right;
-      margin-top: 15px;
-      font-size: 18px;
-    }
-    .btn {
-      margin-top: 20px;
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: #0071e3;
-      color: #fff;
-      text-align: center;
-      border: none;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 16px;
-    }
+    .btn:hover{background:#005bbd}
   </style>
 </head>
 <body>
   <h1>Coșul tău</h1>
   <div class="container">
     <div class="products" id="cartBox"></div>
-    <div class="summary" id="summaryBox">
-      <h2>Rezumat comanda</h2>
-      <ul id="summaryList"></ul>
-      <div class="total" id="summaryTotal">Total: 0 RON</div>
-      <button class="btn">Continuă la plată</button>
-    </div>
+    <div class="summary" id="summaryBox"></div>
   </div>
 
   <script>
@@ -126,23 +125,20 @@
     } else {
       const key = "cart_" + email;
       let cart = JSON.parse(localStorage.getItem(key) || "[]");
-      const cartBox = document.getElementById("cartBox");
-      const summaryList = document.getElementById("summaryList");
-      const summaryTotal = document.getElementById("summaryTotal");
+      const box = document.getElementById("cartBox");
+      const summary = document.getElementById("summaryBox");
 
       function renderCart(){
-        cartBox.innerHTML = "";
-        summaryList.innerHTML = "";
-        let total = 0;
+        box.innerHTML = "";
+        summary.innerHTML = "";
 
         if(cart.length === 0){
-          cartBox.innerHTML = "<p>Coșul este gol.</p>";
-          summaryTotal.textContent = "Total: 0 RON";
+          box.innerHTML = "<p>Coșul este gol.</p>";
           return;
         }
 
+        let total = 0;
         cart.forEach((p, index)=>{
-          // partea stânga
           const div = document.createElement("div");
           div.className = "item";
           div.innerHTML = `
@@ -150,20 +146,20 @@
             <span>${p.price.toFixed(2)} RON</span>
             <button class="remove-btn" data-index="${index}">×</button>
           `;
-          cartBox.appendChild(div);
-
-          // partea dreapta (bon)
-          const li = document.createElement("li");
-          li.innerHTML = `<span>${p.name}</span><span>${p.price.toFixed(2)} RON</span>`;
-          summaryList.appendChild(li);
+          box.appendChild(div);
 
           total += p.price;
         });
 
-        summaryTotal.textContent = `Total: ${total.toFixed(2)} RON`;
+        summary.innerHTML = `
+          <h2>Rezumat comandă</h2>
+          <p>Produse: ${cart.length}</p>
+          <div class="total">Total: ${total.toFixed(2)} RON</div>
+          <button class="btn">Continuă la plată</button>
+        `;
 
-        // evenimente de ștergere
-        cartBox.querySelectorAll(".remove-btn").forEach(btn=>{
+        // remove logic
+        box.querySelectorAll(".remove-btn").forEach(btn=>{
           btn.addEventListener("click", ()=>{
             const idx = parseInt(btn.dataset.index);
             cart.splice(idx, 1);
